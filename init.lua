@@ -87,7 +87,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
+vim.g.mapleader = ','
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
@@ -194,10 +194,40 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+--  mmo keymaps begin
+
+-- Indentation: 4 spaces, no hard tabs
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.expandtab = true
+
+vim.keymap.set('n', 'ö', 'l', { desc = 'Move cursor right' })
+vim.keymap.set('n', 'l', 'k', { desc = 'Move cursor up' })
+vim.keymap.set('n', 'k', 'j', { desc = 'Move cursor down' })
+vim.keymap.set('n', 'j', 'h', { desc = 'Move cursor left' })
+
+vim.keymap.set('v', 'ö', 'l', { desc = 'Move cursor right' })
+vim.keymap.set('v', 'l', 'k', { desc = 'Move cursor up' })
+vim.keymap.set('v', 'k', 'j', { desc = 'Move cursor down' })
+vim.keymap.set('v', 'j', 'h', { desc = 'Move cursor left' })
+
+vim.keymap.set('n', '<Space>ö', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<Space>l', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<Space>k', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<Space>j', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+
+vim.keymap.set('n', '<C-Left>', ':vs<CR>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-Right>', ':vs<CR>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-Down>', ':sp<CR>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-Up>', ':sp<CR>', { desc = 'Move focus to the left window' })
+
+vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Quickly escape from insert mode' })
+vim.keymap.set('n', 'H', '^', { desc = 'Move to the very left border' })
+vim.keymap.set('n', 'L', '$', { desc = 'Move to the very right border' })
+vim.keymap.set('v', 'L', 'g_', { desc = 'Move to the very right border' })
+vim.keymap.set('n', 'S', 'i<cr><esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w', { desc = 'Split lines' })
+--  mmo keymaps end
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -280,6 +310,55 @@ require('lazy').setup({
         delete = { text = '_' },
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
+      },
+    },
+  },
+
+  {
+    'folke/flash.nvim',
+    event = 'VeryLazy',
+    ---@type Flash.Config
+    opts = {},
+    keys = {
+      {
+        's',
+        mode = { 'n', 'x', 'o' },
+        function()
+          require('flash').jump()
+        end,
+        desc = 'Flash',
+      },
+      {
+        'S',
+        mode = { 'n', 'x', 'o' },
+        function()
+          require('flash').treesitter()
+        end,
+        desc = 'Flash Treesitter',
+      },
+      {
+        'r',
+        mode = 'o',
+        function()
+          require('flash').remote()
+        end,
+        desc = 'Remote Flash',
+      },
+      {
+        'R',
+        mode = { 'o', 'x' },
+        function()
+          require('flash').treesitter_search()
+        end,
+        desc = 'Treesitter Search',
+      },
+      {
+        '<c-s>',
+        mode = { 'c' },
+        function()
+          require('flash').toggle()
+        end,
+        desc = 'Toggle Flash Search',
       },
     },
   },
@@ -894,7 +973,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight-moon'
     end,
   },
 
@@ -940,6 +1019,7 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
